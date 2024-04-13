@@ -5,6 +5,12 @@
 <img width="760" alt="Screenshot 2024-04-13 at 10 31 35 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/b2dc0137-8441-4f66-b3f2-0cf9d7ea3e03">
 
 
+
+### Byzantine Failures
+- Definition and characteristics: arbitrary failures, insider attacks.
+- Origin and naming: from the "Byzantine Generals Problem" paper.
+- Process behavior: crash, delay messages, refuse messages, lie.
+
 <img width="754" alt="Screenshot 2024-04-13 at 10 31 53 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/f68db0ce-ea65-4024-9fed-3e91c8ba58b4">
 
 
