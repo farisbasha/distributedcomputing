@@ -59,8 +59,9 @@ We informally justify this result using two steps:
 
 
 
-The main idea of the reduction argument is as follows. In *Z%n ≤ 3f( f&*, partition the *n* processes into three sets *S1*, *S2*, *S3*, each of size ≤ *n/3*. In *Z%3(1&*, each of the three processes *P1*, *P2*, *P3* simulates the actions of the corresponding set *S1*, *S2*, *S3* in *Z%n ≤ 3f(f&*. 
+- With *n = 3* processes and *f = 1*, Byzantine agreement problem unsolvable due to inability to distinguish scenarios, leading to incorrect decisions.
+- Byzantine agreement problem also unsolvable with *f ≥ n/3* processes.
+- Reduction argument: If *Z(n≤3f,f)* is solvable, then *Z(3,1)* is also solvable, but since *Z(3,1)* is not solvable, *Z(n≤3f,f)* is also unsolvable.
 
-With this reduction in place, if there exists an algorithm to solve *Z%n ≤ 3f(f&*, i.e., to satisfy the validity, agreement, and termination conditions, then there also exists an algorithm to solve *Z%3( 1&*, which has been seen to be unsolvable. Hence, there cannot exist an algorithm to solve *Z%n ≤ 3f( f&*.
 
 
