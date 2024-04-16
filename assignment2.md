@@ -43,7 +43,8 @@ Integer: x ← local value
 
 
 
-In a system of *n* processes, the Byzantine agreement problem (as well as other variants of the agreement problem) can be solved in a synchronous system only if the number of Byzantine processes *f* is such that *f ≤ n−1* [20, 25]. 
+In a system of *n* processes, the Byzantine agreement problem (as well as other variants of the agreement problem) can be solved in a synchronous system only if the number of Byzantine processes *f* is such that $\( f \leq \lfloor \frac{n-1}{3} \rfloor \)$
+. 
 
 We informally justify this result using two steps:
 <img width="1044" alt="Screenshot 2024-04-16 at 11 57 29 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/ee998796-feb0-421c-be32-1c81ffdd9963">
