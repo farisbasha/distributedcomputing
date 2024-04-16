@@ -79,6 +79,8 @@
 
 # **Q9. Different Types of Messages:**
 
+<img width="409" alt="Screenshot 2024-04-16 at 7 07 01 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/7a7a4557-b455-4236-94b7-eff1195da206">
+
 1. **In-transit Messages:**
    - Messages sent but not yet received are termed in-transit messages.
    - They do not cause inconsistency if part of the global system state.
