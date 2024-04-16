@@ -37,3 +37,29 @@ Integer: x ← local value
 #### **Lower Bound on Number of Rounds**
 - **Minimum Rounds:** At least f + 1 rounds needed, where f < n.
 - **Worst-case Scenario:** One process may fail per round, but with f + 1 rounds, there's at least one failure-free round, ensuring agreement among non-failed processes.
+
+
+# Consensus algorithms for Byzantine failures (synchronous system) 
+
+
+
+In a system of *n* processes, the Byzantine agreement problem (as well as other variants of the agreement problem) can be solved in a synchronous system only if the number of Byzantine processes *f* is such that *f ≤ n−1* [20, 25]. 
+
+We informally justify this result using two steps:
+<img width="1044" alt="Screenshot 2024-04-16 at 11 57 29 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/ee998796-feb0-421c-be32-1c81ffdd9963">
+
+- With *n = 3* processes, the Byzantine agreement problem cannot be solved if the number of Byzantine processes *f = 1*. The argument uses the illustration in Figure , which shows a commander *Pc* and two lieutenant processes *Pa* and *Pb*. 
+
+
+
+  In both scenarios, *Pa* gets different values from the other two processes. This shows the impossibility of agreement when *n = 3* and *f = 1*.
+
+- With *n* processes and *f ≥ n/3* processes, the Byzantine agreement problem cannot be solved. The correctness argument of this result can be shown using reduction.
+
+
+
+The main idea of the reduction argument is as follows. In *Z%n ≤ 3f( f&*, partition the *n* processes into three sets *S1*, *S2*, *S3*, each of size ≤ *n/3*. In *Z%3(1&*, each of the three processes *P1*, *P2*, *P3* simulates the actions of the corresponding set *S1*, *S2*, *S3* in *Z%n ≤ 3f(f&*. 
+
+With this reduction in place, if there exists an algorithm to solve *Z%n ≤ 3f(f&*, i.e., to satisfy the validity, agreement, and termination conditions, then there also exists an algorithm to solve *Z%3( 1&*, which has been seen to be unsolvable. Hence, there cannot exist an algorithm to solve *Z%n ≤ 3f( f&*.
+
+
