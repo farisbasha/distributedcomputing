@@ -60,3 +60,53 @@ Lamport’s Bakery Algorithm is a classic algorithm for achieving mutual exclusi
 
 5. **Remainder Section**:
    - The process executes the remainder of its code outside the critical section.
+
+<img width="417" alt="Screenshot 2024-05-20 at 2 01 00 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/b3d4c9da-b6ff-4f53-a1ef-75dc7f23b01b">
+
+
+---
+
+# **Checkpointing and Rollback Recovery**
+
+1. **Definition**:
+   - Rollback recovery treats a distributed system application as a collection of processes communicating over a network.
+   - It involves periodically saving the state of a process during failure-free execution to enable restart from a saved state upon failure, reducing lost work.
+   - Saved states are called checkpoints, and restarting from them is termed rollback recovery.
+
+2. **Challenges in Distributed Systems**:
+   - Rollback recovery in distributed systems is complex due to message-induced inter-process dependencies.
+   - Failure of one process may force others to rollback, leading to rollback propagation, also known as the domino effect.
+
+3. **Causes of Rollback Propagation**:
+   - When a sender rolls back before sending a message, the receiver must also rollback to maintain consistency.
+   - Failure to rollback would imply message receipt without sending, violating correct execution.
+
+4. **Preventing Rollback Propagation**:
+   - **Coordinated Checkpointing**: Processes coordinate checkpoints to achieve system-wide consistent states, preventing rollback propagation.
+   - **Communication-Induced Checkpointing**: Checkpoints are taken based on information received from other processes, ensuring system-wide consistency.
+   - **Log-based Rollback Recovery**: Combines checkpointing with logging of nondeterministic events, allowing deterministic recreation of pre-failure states.
+
+
+
+#### Local Checkpoint
+- **Definition**: A snapshot of a process's state at a specific point in time.
+- **Storage**: Saved on stable storage to be available even after a crash.
+- **Rollback**: Processes can roll back to any checkpoint to restore their state.
+- **Notation**: $C_{i,k}$ represents the $k$-th checkpoint of process $P_i$.
+
+#### Consistent System States
+- **Global State**: A collection of individual states of all processes and communication channels.
+- **Consistency**: 
+  - **Consistent State**: All received messages have corresponding send events.
+  - **Inconsistent State**: Shows receipt of messages without corresponding send events (e.g., due to failures).
+- **Goal of Rollback-Recovery**: Restore the system to a consistent state that could have occurred during a failure-free execution.
+
+#### Example
+<img width="420" alt="Screenshot 2024-05-20 at 2 03 40 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/93474fe0-e825-4191-b6f0-bc8f414674f9">
+
+- **Consistent State**: Message $m_1$ is sent but not received.
+- **Inconsistent State**: Process $P_2$ received message $m_2$, but $P_1$ does not show it as sent.
+
+
+
+
