@@ -81,7 +81,7 @@ Lamport’s Bakery Algorithm is a classic algorithm for achieving mutual exclusi
    - When a sender rolls back before sending a message, the receiver must also rollback to maintain consistency.
    - Failure to rollback would imply message receipt without sending, violating correct execution.
 
-4. **Preventing Rollback Propagation**:
+4. **Preventing Rollback Propagation ( Domino Effect )**:
    - **Coordinated Checkpointing**: Processes coordinate checkpoints to achieve system-wide consistent states, preventing rollback propagation.
    - **Communication-Induced Checkpointing**: Checkpoints are taken based on information received from other processes, ensuring system-wide consistency.
    - **Log-based Rollback Recovery**: Combines checkpointing with logging of nondeterministic events, allowing deterministic recreation of pre-failure states.
