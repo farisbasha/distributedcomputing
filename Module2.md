@@ -1,19 +1,19 @@
 # Logical Clocks
 
 A system of logical clocks provides a way to order events in a distributed system based on their causal relationships. The system consists of:
-- **Time Domain $\( T \)$**: A partially ordered set of timestamps.
-- **Logical Clock $\( C \)$**: A function mapping each event $\( e \)$ to a timestamp in $\( T \)$, denoted $\( C(e) \)$.
+- **Time Domain  $\( T \)$**: A partially ordered set of timestamps.
+- **Logical Clock  $\( C \)$**: A function mapping each event  $\( e \)$  to a timestamp in  $\( T \)$ , denoted  $\( C(e) \)$ .
 
 The key property of this system is the clock consistency condition:
-- If event $\( e_i \)$ causally precedes event $\( e_j \)$ (denoted $\( e_i \rightarrow e_j \)$ ), then $\( C(e_i) < C(e_j) \)$.
+- If event  $\( e_i \)$  causally precedes event  $\( e_j \)$  (denoted  $\( e_i \rightarrow e_j \)$  ), then  $\( C(e_i) < C(e_j) \)$ .
 
-When this condition holds in both directions, meaning $\( e_i \rightarrow e_j \iff C(e_i) < C(e_j) \)$, the system is said to be strongly consistent.
+When this condition holds in both directions, meaning  $\( e_i \rightarrow e_j \iff C(e_i) < C(e_j) \)$ , the system is said to be strongly consistent.
 
 ### Implementation of Logical Clocks
 
 To implement logical clocks, each process in the system maintains:
-- **Local Logical Clock $(\( lc_i \))$**: Tracks the progress of the process.
-- **Global Logical Clock $(\( gc_i \))$**: Reflects the process's view of the global time.
+- **Local Logical Clock  $\( lc_i \)$**: Tracks the progress of the process.
+- **Global Logical Clock $\( gc_i \)$**: Reflects the process's view of the global time.
 
 The implementation follows two rules:
 - **R1**: Update the local clock before executing any event (send, receive, or internal).
@@ -23,32 +23,32 @@ The implementation follows two rules:
 
 Proposed by Lamport in 1978, scalar time aims to totally order events in a distributed system:
 - **Time Domain**: Set of non-negative integers.
-- **Local Clock $(\( C_i \))$**: An integer representing both the local and global logical time.
+- **Local Clock $\( C_i \)$**: An integer representing both the local and global logical time.
 
 #### Rules:
-- **R1**: Before any event, increment $\( C_i \)$ by a positive value $\( d \)$ (typically $\( d = 1 \)$ ).
-- **R2**: On message receipt, update $\( C_i \)$ to the maximum of its current value and the received timestamp, then increment $\( C_i \)$.
+- **R1**: Before any event, increment  $\( C_i \)$  by a positive value  $\( d \)$  (typically  $\( d = 1 \)$  ).
+- **R2**: On message receipt, update  $\( C_i \)$  to the maximum of its current value and the received timestamp, then increment  $\( C_i \)$ .
 
 #### Properties:
-- **Consistency**: Ensures $\( e_i \rightarrow e_j \implies C(e_i) < C(e_j) \)$.
+- **Consistency**: Ensures  $\( e_i \rightarrow e_j \implies C(e_i) < C(e_j) \)$ .
 - **Total Ordering**: Orders events with identical timestamps using process identifiers.
-- **Event Counting**: When $\( d = 1 \)$, the timestamp indicates the number of events preceding the current event.
-- **No Strong Consistency**: Scalar clocks do not guarantee $\( C(e_i) < C(e_j) \implies e_i \rightarrow e_j \)$.
+- **Event Counting**: When  $\( d = 1 \)$ , the timestamp indicates the number of events preceding the current event.
+- **No Strong Consistency**: Scalar clocks do not guarantee  $\( C(e_i) < C(e_j) \implies e_i \rightarrow e_j \)$ .
 
 ### Vector Time
 
 Developed by Fidge, Mattern, and Schmuck, vector time uses vectors to maintain more detailed causality information:
-- **Time Domain**: Set of $\( n \)$-dimensional non-negative integer vectors.
-- **Vector Clock ($\( vt_i \)$ )**: Each process $\( p_i \)$ maintains a vector where $\( vt_i[i] \)$ is its local logical clock, and $\( vt_i[j] \)$ represents its knowledge of $\( p_j \)$'s logical time.
+- **Time Domain**: Set of  $\( n \)$ -dimensional non-negative integer vectors.
+- **Vector Clock ( $\( vt_i \)$  )**: Each process  $\( p_i \)$  maintains a vector where  $\( vt_i[i] \)$  is its local logical clock, and  $\( vt_i[j] \)$  represents its knowledge of  $\( p_j \)$ 's logical time.
 
 #### Rules:
-- **R1**: Increment the local logical time $\( vt_i[i] \)$ before executing an event.
+- **R1**: Increment the local logical time  $\( vt_i[i] \)$  before executing an event.
 - **R2**: On message receipt, update the vector clock element-wise to the maximum of the current and received vectors, then increment the local logical time.
 
 #### Properties:
-- **Isomorphism**: There is a direct mapping between event causality and vector timestamps: $\( e_i \rightarrow e_j \iff vt_i < vt_j \)$.
+- **Isomorphism**: There is a direct mapping between event causality and vector timestamps:  $\( e_i \rightarrow e_j \iff vt_i < vt_j \)$ .
 - **Strong Consistency**: Allows determination of causal relationships between events by comparing their vector timestamps.
-- **Event Counting**: With $\( d = 1 \)$, the vector's \$( i \)$-th component counts the number of events at $\( p_i \)$, and the sum of all components minus one gives the total number of causally preceding events.
+- **Event Counting**: With  $\( d = 1 \)$ , the vector's \$( i \)$ -th component counts the number of events at  $\( p_i \)$ , and the sum of all components minus one gives the total number of causally preceding events.
 
 ### Conclusion
 
@@ -70,9 +70,9 @@ Logical clocks, whether scalar or vector, are essential for managing the order a
 
 **Steps**:
 1. A process starts an election by sending an election message to higher priority processes.
-2. If no OK messages are received within time \( T \), it declares itself the coordinator and sends a coordinator message to lower priority processes.
+2. If no OK messages are received within time  $\( T \)$ , it declares itself the coordinator and sends a coordinator message to lower priority processes.
 3. If it receives OK messages, higher priority processes continue the election.
-4. If the coordinator fails to respond within \( T \), it is considered failed.
+4. If the coordinator fails to respond within  $\( T \)$ , it is considered failed.
 5. The initiating process sends an election message to higher priority processes and waits for responses.
 6. If no responses, it elects itself as coordinator and informs lower priority processes.
 7. A recovered process with higher priority can become the new coordinator.
@@ -98,33 +98,33 @@ Both algorithms ensure that a unique coordinator is elected to maintain system c
 # System Model
 
 1. **Processes and Channels:**
-   - The system consists of `n` processes \( p_1, p_2, \ldots, p_n \) connected by communication channels.
+   - The system consists of `n` processes  $\( p_1, p_2, \ldots, p_n \)$  connected by communication channels.
    - There is no shared memory or global clock; processes communicate via message passing.
-   - \( C_{ij} \) denotes the channel from process \( p_i \) to \( p_j \), with its state denoted by \( SC_{ij} \).
+   -  $\( C_{ij} \)$  denotes the channel from process  $\( p_i \)$  to  $\( p_j \)$ , with its state denoted by  $\( SC_{ij} \)$ .
 
 2. **Events:**
    - Processes perform internal events, message send events, and message receive events.
-   - For a message \( m_{ij} \) sent from \( p_i \) to \( p_j \), \( \text{send}(m_{ij}) \) and \( \text{rec}(m_{ij}) \) denote its send and receive events.
+   - For a message  $\( m_{ij} \)$  sent from  $\( p_i \)$  to  $\( p_j \)$ ,  $\( \text{send}(m_{ij}) \)$  and  $\( \text{rec}(m_{ij}) \)$  denote its send and receive events.
 
 3. **Process State:**
-   - The state of process \( p_i \) at any instant, denoted by \( LS_i \), results from the sequence of events executed by \( p_i \).
-   - An event \( e \) is part of \( LS_i \) if it is in the sequence leading to \( LS_i \).
+   - The state of process  $\( p_i \)$  at any instant, denoted by  $\( LS_i \)$ , results from the sequence of events executed by  $\( p_i \)$ .
+   - An event  $\( e \)$  is part of  $\( LS_i \)$  if it is in the sequence leading to  $\( LS_i \)$ .
 
 4. **Channel State:**
-   - For a channel \( C_{ij} \), the set of messages in transit is defined as \( \text{transit}(LS_i, LS_j) = \{ m_{ij} \mid \text{send}(m_{ij}) \in LS_i \land \text{rec}(m_{ij}) \notin LS_j \} \).
+   - For a channel  $\( C_{ij} \)$ , the set of messages in transit is defined as  $\( \text{transit}(LS_i, LS_j) = \{ m_{ij} \mid \text{send}(m_{ij}) \in LS_i \land \text{rec}(m_{ij}) \notin LS_j \} \)$ .
 
 5. **Models of Communication:**
    - **FIFO Model:** Channels act as first-in-first-out queues, preserving message order.
    - **Non-FIFO Model:** Channels are sets where messages are added and removed in random order.
-   - **Causal Delivery:** Ensures that if \( \text{send}(m_{ij}) \rightarrow \text{send}(m_{kj}) \), then \( \text{rec}(m_{ij}) \rightarrow \text{rec}(m_{kj}) \).
+   - **Causal Delivery:** Ensures that if  $\( \text{send}(m_{ij}) \rightarrow \text{send}(m_{kj}) \)$ , then  $\( \text{rec}(m_{ij}) \rightarrow \text{rec}(m_{kj}) \)$ .
 
 ### Consistent Global State
 
-- The global state \( GS \) of a distributed system is a collection of local states of processes and channels: \( GS = \{ \bigcup_i LS_i , \bigcup_{i,j} SC_{ij} \} \).
+- The global state  $\( GS \)$  of a distributed system is a collection of local states of processes and channels:  $\( GS = \{ \bigcup_i LS_i , \bigcup_{i,j} SC_{ij} \} \)$ .
 
 - **Consistency Conditions:**
-  - **C1:** If \( \text{send}(m_{ij}) \in LS_i \), then \( m_{ij} \) must be in \( SC_{ij} \) or \( \text{rec}(m_{ij}) \in LS_j \).
-  - **C2:** If \( \text{send}(m_{ij}) \notin LS_i \), then \( m_{ij} \) is neither in \( SC_{ij} \) nor \( \text{rec}(m_{ij}) \in LS_j \).
+  - **C1:** If  $\( \text{send}(m_{ij}) \in LS_i \)$ , then  $\( m_{ij} \)$  must be in  $\( SC_{ij} \)$  or  $\( \text{rec}(m_{ij}) \in LS_j \)$ .
+  - **C2:** If  $\( \text{send}(m_{ij}) \notin LS_i \)$ , then  $\( m_{ij} \)$  is neither in  $\( SC_{ij} \)$  nor  $\( \text{rec}(m_{ij}) \in LS_j \)$ .
 
 - **Interpretation in Terms of Cuts:**
   - A cut in a space-time diagram divides it into past and future.
@@ -150,17 +150,17 @@ In summary, the system model describes processes and channels, event types, and 
 - This algorithm works in systems with FIFO (First-In-First-Out) communication channels.
 
 ### **Algorithm**
-**Marker Sending Rule for Process \( p_i \):**
-1. Process \( p_i \) records its local state.
-2. For each outgoing channel \( C \) that hasn't received a marker yet, \( p_i \) sends a marker along \( C \) before sending any further messages on \( C \).
+**Marker Sending Rule for Process  $\( p_i \)$ :**
+1. Process  $\( p_i \)$  records its local state.
+2. For each outgoing channel  $\( C \)$  that hasn't received a marker yet,  $\( p_i \)$  sends a marker along  $\( C \)$  before sending any further messages on  $\( C \)$ .
 
-**Marker Receiving Rule for Process \( p_j \):**
-- Upon receiving a marker along channel \( C \):
-  - If \( p_j \) has not yet recorded its state:
-    - \( p_j \) records the state of \( C \) as empty.
-    - \( p_j \) then records its own state and follows the Marker Sending Rule.
-  - If \( p_j \) has already recorded its state:
-    - \( p_j \) records the state of \( C \) as the set of messages received after \( p_j \) recorded its state and before receiving the marker.
+**Marker Receiving Rule for Process  $\( p_j \)$ :**
+- Upon receiving a marker along channel  $\( C \)$ :
+  - If  $\( p_j \)$  has not yet recorded its state:
+    -  $\( p_j \)$  records the state of  $\( C \)$  as empty.
+    -  $\( p_j \)$  then records its own state and follows the Marker Sending Rule.
+  - If  $\( p_j \)$  has already recorded its state:
+    -  $\( p_j \)$  records the state of  $\( C \)$  as the set of messages received after  $\( p_j \)$  recorded its state and before receiving the marker.
 
 
 ### **Operation of the Algorithm:**
@@ -172,12 +172,12 @@ In summary, the system model describes processes and channels, event types, and 
 **Correctness:**
 - **Condition C2:** The FIFO property ensures that no messages sent after a marker are included in the channel state.
 - **Condition C1:** 
-  - If a process \( p_j \) receives a message \( m_{ij} \) that precedes a marker, and it hasn't taken its snapshot, \( p_j \) includes \( m_{ij} \) in its snapshot.
-  - If \( p_j \) has already taken its snapshot, \( m_{ij} \) is recorded in the state of the channel \( C_{ij} \).
+  - If a process  $\( p_j \)$  receives a message  $\( m_{ij} \)$  that precedes a marker, and it hasn't taken its snapshot,  $\( p_j \)$  includes  $\( m_{ij} \)$  in its snapshot.
+  - If  $\( p_j \)$  has already taken its snapshot,  $\( m_{ij} \)$  is recorded in the state of the channel  $\( C_{ij} \)$ .
 
 **Complexity:**
-- **Messages:** The algorithm requires \( O(e) \) messages, where \( e \) is the number of edges in the network.
-- **Time:** The algorithm requires \( O(d) \) time, where \( d \) is the diameter of the network.
+- **Messages:** The algorithm requires  $\( O(e) \)$  messages, where  $\( e \)$  is the number of edges in the network.
+- **Time:** The algorithm requires  $\( O(d) \)$  time, where  $\( d \)$  is the diameter of the network.
 
 **Summary:**
 The Chandy-Lamport algorithm effectively captures a consistent global snapshot in a distributed system by ensuring that each process records its state and the state of its incoming channels accurately, maintaining consistency according to the FIFO channel properties. This algorithm efficiently handles the challenges of distributed systems where there is no global clock or shared memory.
@@ -196,7 +196,7 @@ A fundamental problem in distributed systems is to determine if a distributed co
 - The computation starts when the controlling agent sends a basic message to one of the processes.
 
 **Key Points:**
-- Each active process and each message in transit are assigned a non-zero weight \( W \) such that \( 0 < W \leq 1 \).
+- Each active process and each message in transit are assigned a non-zero weight  $\( W \)$  such that  $\( 0 < W \leq 1 \)$ .
 - The total sum of weights across all active processes and messages in transit is always 1.
 - When a process sends a message, it includes part of its weight with the message.
 - When a process receives a message, it adds the weight from the message to its own weight.
@@ -204,36 +204,36 @@ A fundamental problem in distributed systems is to determine if a distributed co
 - The controlling agent detects termination when its weight reaches 1.
 
 **Notation:**
-- \( W \): Weight on a process or controlling agent.
-- \( B(DW) \): A basic message \( B \) sent as part of the computation, with \( DW \) being the weight assigned to it.
-- \( C(DW) \): A control message \( C \) sent from a process to the controlling agent, with \( DW \) being the weight assigned to it.
+-  $\( W \)$ : Weight on a process or controlling agent.
+-  $\( B(DW) \)$ : A basic message  $\( B \)$  sent as part of the computation, with  $\( DW \)$  being the weight assigned to it.
+-  $\( C(DW) \)$ : A control message  $\( C \)$  sent from a process to the controlling agent, with  $\( DW \)$  being the weight assigned to it.
 
 #### Rules of the Algorithm:
 
 1. **Rule 1 (Weight Splitting and Sending):**
-   - An active process or the controlling agent sends a basic message to a process \( P \) by splitting its weight \( W \) into \( W_1 \) and \( W_2 \) such that \( W_1 + W_2 = W \) and \( W_1 > 0 \), \( W_2 > 0 \).
-   - It assigns its weight to \( W_1 \) and sends \( B(DW := W_2) \) to \( P \).
+   - An active process or the controlling agent sends a basic message to a process  $\( P \)$  by splitting its weight  $\( W \)$  into  $\( W_1 \)$  and  $\( W_2 \)$  such that  $\( W_1 + W_2 = W \)$  and  $\( W_1 > 0 \)$ ,  $\( W_2 > 0 \)$ .
+   - It assigns its weight to  $\( W_1 \)$  and sends  $\( B(DW := W_2) \)$  to  $\( P \)$ .
 
 2. **Rule 2 (Weight Addition on Receipt):**
-   - On receiving the basic message \( B(DW) \), process \( P \) adds \( DW \) to its weight \( W \) (i.e., \( W := W + DW \)).
-   - If \( P \) was idle, it becomes active.
+   - On receiving the basic message  $\( B(DW) \)$ , process  $\( P \)$  adds  $\( DW \)$  to its weight  $\( W \)$  (i.e.,  $\( W := W + DW \)$ ).
+   - If  $\( P \)$  was idle, it becomes active.
 
 3. **Rule 3 (Becoming Idle and Sending Control Message):**
-   - A process switches from the active state to the idle state by sending a control message \( C(DW := W) \) to the controlling agent and sets its weight \( W := 0 \).
+   - A process switches from the active state to the idle state by sending a control message  $\( C(DW := W) \)$  to the controlling agent and sets its weight  $\( W := 0 \)$ .
 
 4. **Rule 4 (Controlling Agent Receiving Control Message):**
-   - Upon receiving a control message \( C(DW) \), the controlling agent adds \( DW \) to its weight \( W \) (i.e., \( W := W + DW \)).
-   - If \( W = 1 \), the controlling agent concludes that the computation has terminated.
+   - Upon receiving a control message  $\( C(DW) \)$ , the controlling agent adds  $\( DW \)$  to its weight  $\( W \)$  (i.e.,  $\( W := W + DW \)$ ).
+   - If  $\( W = 1 \)$ , the controlling agent concludes that the computation has terminated.
 
 #### Correctness of the Algorithm:
 
 - **Sets and Weights:**
-  - \( A \): Set of weights on all active processes.
-  - \( B \): Set of weights on all basic messages in transit.
-  - \( C \): Set of weights on all control messages in transit.
-  - \( W_c \): Weight on the controlling agent.
+  -  $\( A \)$ : Set of weights on all active processes.
+  -  $\( B \)$ : Set of weights on all basic messages in transit.
+  -  $\( C \)$ : Set of weights on all control messages in transit.
+  -  $\( W_c \)$ : Weight on the controlling agent.
 
-- **Invariant:** The sum of weights in \( A \), \( B \), \( C \), and \( W_c \) is always 1.
+- **Invariant:** The sum of weights in  $\( A \)$ ,  $\( B \)$ ,  $\( C \)$ , and  $\( W_c \)$  is always 1.
 
 #### Characteristics:
 - **Termination Detection:** The controlling agent determines termination when it regains the full weight of 1.
@@ -252,21 +252,21 @@ By maintaining the sum of weights and ensuring proper weight transfer, the algor
 - **Global Snapshot**: A request is successful if all processes take a snapshot, indicating the global state and computation termination.
 
 #### Formal Description:
-- **Logical Clocks**: Each process has a logical clock \(x\), starting at zero and incrementing each time the process becomes idle.
+- **Logical Clocks**: Each process has a logical clock  $\(x\)$ , starting at zero and incrementing each time the process becomes idle.
 - **Message Types**:
-  - **Basic Message**: \(B(x)\) - sent during regular operations.
-  - **Control Message**: \(R(x, i)\) - sent to request snapshots.
+  - **Basic Message**:  $\(B(x)\)$  - sent during regular operations.
+  - **Control Message**:  $\(R(x, i)\)$  - sent to request snapshots.
 - **Clock Synchronization**: Processes update their clocks to the maximum value seen.
-- **Variable \(k\)**: Tracks the maximum \((x, k)\) values.
+- **Variable  $\(k\)$**: Tracks the maximum  $\((x, k)\)$  values.
 
 #### Algorithm Rules:
-1. **R1**: Active process \(i\) sends \(B(x)\) to process \(j\).
-2. **R2**: Upon receiving \(B(x')\), process \(i\) increments \(x\) and activates if idle.
-3. **R3**: When process \(i\) goes idle, it increments \(x\), sets \(k = i\), sends \(R(x, k)\) to all, and takes a local snapshot.
-4. **R4**: Upon receiving \(R(x', k')\):
-   - If \((x', k') > (x, k)\) and idle, update \((x, k)\) and take a snapshot.
-   - If \((x', k') \leq (x, k)\) and idle, do nothing.
-   - If active, update \(x\) to \(\max(x', x)\).
+1. **R1**: Active process  $\(i\)$  sends  $\(B(x)\)$  to process  $\(j\)$ .
+2. **R2**: Upon receiving  $\(B(x')\)$ , process  $\(i\)$  increments  $\(x\)$  and activates if idle.
+3. **R3**: When process  $\(i\)$  goes idle, it increments  $\(x\)$ , sets  $\(k = i\)$ , sends  $\(R(x, k)\)$  to all, and takes a local snapshot.
+4. **R4**: Upon receiving  $\(R(x', k')\)$ :
+   - If  $\((x', k') > (x, k)\)$  and idle, update  $\((x, k)\)$  and take a snapshot.
+   - If  $\((x', k') \leq (x, k)\)$  and idle, do nothing.
+   - If active, update  $\(x\)$  to  $\(\max(x', x)\)$ .
 
 The last process to become idle has the largest clock value, ensuring that all processes take a snapshot for it, confirming computation termination.
 
@@ -275,8 +275,8 @@ The last process to become idle has the largest clock value, ensuring that all p
 ## Spanning-Tree-Based Termination Detection Algorithm
 
 - **Structure:**
-  - \( N \) processes \( P_i \) (\(0 \leq i \leq N\)) are nodes in a connected undirected graph.
-  - A fixed spanning tree with \( P_0 \) as the root handles termination detection.
+  -  $\( N \)$  processes  $\( P_i \)$  (  $\(0 \leq i \leq N\)$  ) are nodes in a connected undirected graph.
+  - A fixed spanning tree with  $\( P_0 \)$  as the root handles termination detection.
 
 - **Termination Detection:**
   - **Leaf Nodes:** Report termination to their parents.
@@ -299,5 +299,5 @@ The last process to become idle has the largest clock value, ensuring that all p
     - **Repeat Signals:** Root restarts the detection if a black token is received.
 
 - **Performance:**
-  - **Best Case:** \( O(N) \) messages.
-  - **Worst Case:** \( O(N \times M) \) messages, where \( M \) is the number of computation messages.
+  - **Best Case:**  $\( O(N) \)$  messages.
+  - **Worst Case:**  $\( O(N \times M) \)$  messages, where  $\( M \)$  is the number of computation messages.
