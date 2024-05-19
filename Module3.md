@@ -46,7 +46,7 @@
 - **Message Complexity**: Number of messages per CS execution.
 - **Synchronization Delay**: Time between CS exits and next CS entry.
 - **Response Time**: Wait time for CS execution post request.
-- **System Throughput**: Rate of CS execution, calculated as \( \text{throughput} = 1 / (\text{SD} + E) \), where SD is synchronization delay, E is average CS execution time.
+- **System Throughput**: Rate of CS execution, calculated as $\text{throughput} = 1 / (\text{SD} + E)$, where SD is synchronization delay, E is average CS execution time.
 
 **Load Performance**:
 - **Low Load**: Rare simultaneous CS requests.
@@ -98,33 +98,9 @@
 - **Performance**: Synchronization delay equals maximum message transmission time. Can be optimized to 2(N-1) messages.
 - **Advantages**: Simplicity, fairness, scalability.
 - **Disadvantages**: Message overhead, delayed execution, limited fault tolerance.
-```
-// Variables:
-//   tsi: Timestamp of Site Si
-//   request_queuei: Queue of Site Si ordered by timestamps
 
-// To enter Critical section:
-When Si wants to enter critical section:
-    Send REQUEST(tsi, i) message to all other sites
-    Add REQUEST(tsi, i) to request_queuei
+<img width="470" alt="Screenshot 2024-05-19 at 10 44 48 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/d806570e-607b-487c-bf30-de885477f53b">
 
-When Sj receives REQUEST(tsi, i) from Si:
-    Send REPLY(tsj, j) message to Si
-    Add REQUEST(tsi, i) to request_queuej
-
-// To execute the critical section:
-When Si wants to execute critical section:
-    If all sites have sent REPLY messages with timestamps greater than (tsi, i) and request_queuei is at the top:
-        Enter critical section
-        Execute critical section code
-        Send RELEASE message to all other sites
-        Remove REQUEST(tsi, i) from request_queuei
-
-// To release the critical section:
-When Si exits the critical section:
-    Remove REQUEST(tsi, i) from request_queuei
-    Send RELEASE message to all other sites
-```
 <img width="727" alt="Screenshot 2024-04-15 at 10 27 25 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/e8590641-c0d6-4b4a-bfb6-626b3124a286">
 
 
