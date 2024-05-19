@@ -259,7 +259,7 @@ Handling deadlocks in distributed systems is complex due to limited knowledge of
 #### Deadlock Detection
 - **Deadlock**: Occurs if there is a directed cycle or knot in the WFG, indicating mutual waiting among processes with no progress possible.
 
-#### Example Analysis
+#### Example Figure 10.1 Analysis
 <img width="488" alt="Screenshot 2024-05-19 at 9 42 48 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/3cf84ff0-eb50-4d66-bb44-47f6cd28a1de">
 
 - **Processes and Dependencies**:
@@ -270,14 +270,42 @@ Handling deadlocks in distributed systems is complex due to limited knowledge of
 
   If $P_{33}$ (Site 3) waits for $P_{24}$ (Site 4), a cycle forms, causing deadlock.
 
-#### Additional Points
-- **Distributed Systems Complexity**: Increased difficulty in detecting and resolving deadlocks due to distributed nature and communication latency.
-- **Prevention and Avoidance**:
-  - **Prevention**: Ensure system never enters deadlock (e.g., avoid circular wait).
-  - **Avoidance**: Dynamically check resource allocations to avoid unsafe states (e.g., Banker’s algorithm).
-- **Resolution Strategies**:
-  - **Detection**: Periodically check WFG for cycles, abort processes to break deadlocks.
-  - **Recovery**: Preempt resources or rollback/restart processes.
-- **Optimization**: Efficient WFG analysis algorithms to minimize performance impact, localized checks within process clusters.
+### Summary Based on Figure 10.1 in the Context of Different Deadlock Models
 
-Understanding and managing WFGs are essential for maintaining robust and efficient distributed systems.
+#### The Single-Resource Model
+- In this model, a process can have at most one outstanding request for a single resource.
+- A cycle in the WFG directly indicates a deadlock.
+- **Figure 10.1 Example**: The cycle $P_{11} \rightarrow P_{21} \rightarrow P_{24} \rightarrow P_{54} \rightarrow P_{11}$ shows a deadlock.
+
+#### The AND Model
+- A process can request multiple resources simultaneously and the request is satisfied only when all requested resources are granted.
+- The presence of a cycle in the WFG indicates a deadlock.
+- **Figure 10.1 Example**: Process $P_{11}$ has two outstanding requests. The cycle $P_{11} \rightarrow P_{21} \rightarrow P_{24} \rightarrow P_{54} \rightarrow P_{11}$ corresponds to a deadlock situation.
+- Even processes not part of the cycle can be deadlocked if they are dependent on the cycle. For example, $P_{44}$ is deadlocked due to its dependency on $P_{24}$.
+
+#### The OR Model
+- A process can make requests for multiple resources simultaneously, and the request is satisfied if any one of the requested resources is granted.
+- The presence of a cycle does not necessarily indicate a deadlock. Instead, the presence of a knot in the WFG indicates a deadlock.
+- **Figure 10.1 Example**: If all nodes are OR nodes, $P_{11}$ is not deadlocked if $P_{33}$ releases its resources, allowing $P_{32}$ and then $P_{11}$ to proceed.
+- A blocked process is deadlocked if it is in a knot or if it can only reach processes that are part of a knot.
+
+#### The AND-OR Model
+- This model combines the AND and OR models, allowing complex resource requests.
+- A request can specify any combination of AND and OR.
+- Deadlock detection involves testing for OR-model deadlocks repeatedly, though this is inefficient.
+
+#### The P-out-of-Q Model
+- A variation of the AND-OR model where a request can specify obtaining any $k$ out of $n$ available resources.
+- Expressive power is similar to the AND-OR model but with a more compact request formation.
+
+#### The Unrestricted Model
+- No assumptions are made about the structure of resource requests.
+- The only assumption is that the deadlock is stable.
+- These algorithms are theoretically valuable but may not be practical due to lack of assumptions about the underlying distributed system computations.
+
+### Specific Analysis for Figure 10.1
+- **Single-Resource and AND Models**: The cycle $P_{11} \rightarrow P_{21} \rightarrow P_{24} \rightarrow P_{54} \rightarrow P_{11}$ confirms a deadlock.
+- **OR Model**: The presence of a cycle does not necessarily indicate a deadlock. Deadlock detection requires identifying a knot, not just a cycle.
+- **Impact on $P_{44}$**: Regardless of the cycle or knot, $P_{44}$ is deadlocked due to its dependency on $P_{24}$.
+
+Thus, Figure 10.1 shows a deadlock in both the single-resource and AND models due to the presence of a cycle. In the OR model, further analysis would be needed to confirm a deadlock by checking for knots.
