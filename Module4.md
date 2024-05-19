@@ -107,6 +107,159 @@ Lamport’s Bakery Algorithm is a classic algorithm for achieving mutual exclusi
 - **Consistent State**: Message $m_1$ is sent but not received.
 - **Inconsistent State**: Process $P_2$ received message $m_2$, but $P_1$ does not show it as sent.
 
+--- 
+
+# Different Types of Messages:**
+
+
+<img width="684" alt="Screenshot 2024-05-20 at 2 12 21 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/9747c5ee-ef48-479f-96ac-d093d1edf502">
+
+1. **In-transit Messages:**
+   - Messages sent but not yet received are termed in-transit messages.
+   - They do not cause inconsistency if part of the global system state.
+   - For reliable channels, in-transit messages must be included in the system state, ensuring their eventual delivery.
+   - In lossy channels, in-transit messages may be omitted from the system state.
+
+2. **Lost Messages:**
+   - Messages whose send operation is not undone but receive is undone are called lost messages.
+   - Occurs when the receiver rolls back before receiving the message, while the sender does not.
+   - Lost messages introduce inconsistencies and must be addressed during recovery.
+
+3. **Delayed Messages:**
+   - Messages whose receive event is not recorded due to receiver unavailability or late arrival post-rollback are termed delayed messages.
+   - They pose challenges as their reception status is uncertain during recovery.
+
+4. **Orphan Messages:**
+   - Messages with receive recorded but send event not recorded are termed orphan messages.
+   - They occur when a rollback undoes the message send, leaving the receive event intact.
+   - Orphan messages are problematic and must be managed during recovery to maintain consistency.
+
+
+# Issues in Failure Recovery:**
+- Restoring the system to a consistent state involves rolling back processes to valid checkpoints.
+- Orphan messages arise when a process receives a message after rolling back, causing inconsistencies.
+- Rollback of other processes may be required to eliminate orphan messages, ensuring a consistent global state.
+- Messages received during the failure may be in abnormal states, including delayed, lost, or orphaned.
+- Differentiating between normal, delayed, lost, and orphan messages is crucial during recovery.
+- Lost messages can be handled by logging and replaying sent messages during recovery but may lead to duplicates.
+- Techniques for managing delayed, lost, and orphan messages are essential for effective failure recovery.
+
+
+---
+
+# Checkpointing in Distributed Systems
+
+## Uncoordinated Checkpointing
+- **Autonomy**: Processes decide independently when to take checkpoints, reducing runtime overhead.
+- **Advantages**: 
+  - No need for synchronization.
+  - Processes can choose optimal times for checkpoints.
+- **Disadvantages**:
+  - Risk of the **domino effect**, causing extensive rollback and lost work.
+  - Slow recovery, needing multiple iterations to find a consistent state.
+  - Requires maintaining multiple checkpoints and periodic garbage collection.
+  - Not suitable for frequent output commits due to the need for global coordination.
+
+## Coordinated Checkpointing
+- **Synchronization**: Processes coordinate checkpoints to form a consistent global state.
+- **Advantages**:
+  - Simplified recovery, avoiding the domino effect.
+  - Only one checkpoint per process, reducing storage needs.
+- **Disadvantages**:
+  - High latency and overhead for each checkpoint.
+  - Blocking communications during the checkpoint process can hinder performance.
+
+### Blocking Coordinated Checkpointing
+- **Process**:
+  - Processes block communications, take checkpoints, and send acknowledgments.
+  - Coordinator commits checkpoints and processes resume execution.
+- **Issue**: Computation is blocked, leading to delays.
+
+### Non-blocking Checkpoint Coordination
+- **FIFO Channels**: Uses checkpoint requests to coordinate non-blocking checkpoints.
+  - Example: Chandy-Lamport snapshot algorithm.
+- **Non-FIFO Channels**: 
+  - Uses piggybacked markers or checkpoint indices on messages.
+- **Scalability**: 
+  - Involves only processes that have communicated since the last checkpoint.
 
 
 
+## Communication-Induced Checkpointing
+
+### Overview
+- **Purpose**: Avoid the domino effect while allowing some independent checkpointing.
+- **Benefits**: Reduces or eliminates useless checkpoints.
+
+### Types of Checkpoints
+- **Autonomous Checkpoints**: Taken independently by processes.
+- **Forced Checkpoints**: Taken due to communication and piggybacked information.
+
+### Process
+- **Piggybacking Information**: Protocol-related data is added to each application message.
+- **Decision Making**: The receiver uses the piggybacked information to determine if a forced checkpoint is needed to maintain a consistent global state.
+- **Forced Checkpoints**: Must be taken before processing the message content, adding some latency and overhead.
+
+### Advantages
+- **No Coordination Messages**: Unlike coordinated checkpointing, there are no special messages exchanged.
+- **Reduced Overhead**: Focus on minimizing the number of forced checkpoints.
+
+### Types of Communication-Induced Checkpointing
+1. **Model-Based Checkpointing**:
+   - **Goal**: Prevent patterns that lead to inconsistent states.
+   - **Mechanism**: Processes detect potential inconsistencies and independently take forced checkpoints.
+   - **Operation**: No control messages exchanged; decisions based on locally available information.
+
+2. **Index-Based Checkpointing**:
+   - **Goal**: Ensure checkpoints with the same index across processes form a consistent state.
+   - **Mechanism**: Assigns monotonically increasing indexes to checkpoints.
+   - **Piggybacking**: Indexes are piggybacked on messages to help receivers decide when to take a forced checkpoint.
+   - **Protocol Example**: A process takes a checkpoint upon receiving a message with a higher index than its local checkpoint index.
+
+
+## Log-based Rollback Recovery
+
+Log-based rollback recovery leverages deterministic and non-deterministic events to maintain system consistency during failures.
+
+### Deterministic and Non-deterministic Events
+- **Non-deterministic Events**: Events like message receipts or internal events within a process.
+- **Deterministic Events**: Regular execution intervals that can be logged.
+
+### Logging and Recovery
+- Processes log determinants of all non-deterministic events to stable storage during normal operation.
+- On failure, systems use these logs to restore consistent states.
+
+### No-Orphans Consistency Condition
+- **Depend(e)**: Processes affected by a non-deterministic event $e$.
+- **Log(e)**: Processes that have logged $e$'s determinant in volatile memory.
+- **Stable(e)**: True if $e$'s determinant is logged in stable storage.
+- **Always-No-Orphans Condition**: $\( \forall e: \neg \text{Stable}(e) \Rightarrow \text{Depend}(e) \subseteq \text{Log}(e) \)$.
+
+### Pessimistic Logging
+- Assumes failures can occur after any non-deterministic event.
+- **Synchronous Logging**: $\( \forall e: \neg \text{Stable}(e) \Rightarrow \text{Depend}(e) = 0 \)$.
+- Requires determinants to be logged immediately to prevent dependencies on unlogged events.
+- <img width="561" alt="Screenshot 2024-05-20 at 2 14 59 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/350e8b55-35d5-4863-aebe-2ca22f7a417f">
+- Suppose processes 𝑃1 and 𝑃2 fail as shown, restart from checkpoints B and
+C, and roll forward using their determinant logs to deliver again the same
+sequence of messages as in the pre-failure execution
+- Once the recovery is complete, both processes will be consistent with the
+state of 𝑃0 that includes the receipt of message 𝑚7 from 𝑃1
+
+### Optimistic Logging
+- Logs determinants asynchronously.
+- <img width="704" alt="Screenshot 2024-05-20 at 2 15 34 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/cf0e0366-6f85-4f58-a305-19fc36359c2e">
+- Assumes logging completes before failures occur.
+- Does not enforce the always-no-orphans condition.
+- Requires tracking causal dependencies and may need multiple checkpoints.
+
+### Causal Logging
+
+<img width="723" alt="Screenshot 2024-05-20 at 2 15 55 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/0d2b5cd4-70f7-4dcc-a944-b47b99f766c1">
+
+- Merges advantages of both pessimistic and optimistic logging with a more complex recovery protocol.
+- Allows independent output commits and prevents orphans.
+- Ensures the always-no-orphans property.
+- Maintains information on events that have causally affected a process's state.
+
+Each logging strategy balances trade-offs between performance, complexity, and reliability to suit different system needs.
