@@ -26,7 +26,7 @@ Proposed by Lamport in 1978, scalar time aims to totally order events in a distr
 - **Local Clock $(\( C_i \))$**: An integer representing both the local and global logical time.
 
 #### Rules:
-- **R1**: Before any event, increment $\( C_i \)$ by a positive value $\( d \)$ (typically $\( d = 1 \)$).
+- **R1**: Before any event, increment $\( C_i \)$ by a positive value $\( d \)$ (typically $\( d = 1 \)$ ).
 - **R2**: On message receipt, update $\( C_i \)$ to the maximum of its current value and the received timestamp, then increment $\( C_i \)$.
 
 #### Properties:
@@ -39,7 +39,7 @@ Proposed by Lamport in 1978, scalar time aims to totally order events in a distr
 
 Developed by Fidge, Mattern, and Schmuck, vector time uses vectors to maintain more detailed causality information:
 - **Time Domain**: Set of $\( n \)$-dimensional non-negative integer vectors.
-- **Vector Clock ($\( vt_i \)$)**: Each process $\( p_i \)$ maintains a vector where $\( vt_i[i] \)$ is its local logical clock, and $\( vt_i[j] \)$ represents its knowledge of $\( p_j \)$'s logical time.
+- **Vector Clock ($\( vt_i \)$ )**: Each process $\( p_i \)$ maintains a vector where $\( vt_i[i] \)$ is its local logical clock, and $\( vt_i[j] \)$ represents its knowledge of $\( p_j \)$'s logical time.
 
 #### Rules:
 - **R1**: Increment the local logical time $\( vt_i[i] \)$ before executing an event.
