@@ -6,12 +6,16 @@ Reaching agreement among processes in a distributed system is essential for many
 
 ### Assumptions for Agreement Algorithms
 
-1. **Failure Models**: 
-   - **Fail-Stop**: A process may crash during execution.
-   - **Send/Receive Omission**: A process may fail to send or receive messages.
-   - **Byzantine Failures**: A process may behave arbitrarily, including malicious actions.
+1. #### **Failure Models**
+   Failure models describe the ways in which processes can fail in a system. These models impact the design and feasibility of consensus algorithms.
+
+   1. **Fail-Stop Model**: A process can crash unexpectedly during execution, halting its operations and possibly leaving messages unsent or partially sent.
+   2. **Send/Receive Omission Model**: A process may fail to send or receive messages. For example, a message intended for a process may never be sent or may be lost in transit.
+   3. **Byzantine Failure Model**: Processes may exhibit arbitrary or malicious behavior, including sending false information or tampering with messages..
    
 2. **Communication Model**:
+   Communication models determine how processes exchange messages and the timing guarantees of message delivery.
+
    - **Synchronous Systems**: Non-arrival of a message can be detected.
    - **Asynchronous Systems**: Non-arrival of a message is indistinguishable from a delay.
    
@@ -32,7 +36,14 @@ Reaching agreement among processes in a distributed system is essential for many
 
 ### Byzantine Generals Problem
 
-A classic example of agreement in the presence of Byzantine faults involves generals planning an attack. They need to agree on a common time for the attack, despite some generals possibly being traitors who send misleading information. This scenario illustrates the difficulty of reaching consensus in asynchronous systems with potential Byzantine behavior.
+A classic example of agreement in the presence of Byzantine faults involves generals planning an attack. 
+Consider four generals surrounding a fort, needing to agree on a common time to attack. This scenario models:
+- **Processes**: Generals
+- **Messages**: Communication between generals
+- **Failures**: One or more generals could be traitors (Byzantine faults) giving misleading information.
+
+The challenge is to ensure that all loyal generals agree on the same attack time despite the presence of traitors. This example illustrates the difficulties of reaching consensus in distributed systems, especially under the Byzantine failure model.
+
 
 ### Key Points
 
