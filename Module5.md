@@ -13,26 +13,30 @@ Reaching agreement among processes in a distributed system is essential for many
    2. **Send/Receive Omission Model**: A process may fail to send or receive messages. For example, a message intended for a process may never be sent or may be lost in transit.
    3. **Byzantine Failure Model**: Processes may exhibit arbitrary or malicious behavior, including sending false information or tampering with messages..
    
-2. **Communication Model**:
+2. #### **Communication Model**:
    Communication models determine how processes exchange messages and the timing guarantees of message delivery.
 
    - **Synchronous Systems**: Non-arrival of a message can be detected.
    - **Asynchronous Systems**: Non-arrival of a message is indistinguishable from a delay.
    
-3. **Network Connectivity**: 
-   - Full logical connectivity allows direct message passing between any two processes.
-   
-4. **Sender Identification**: 
-   - The identity of the sender is always known, even if the message content is tampered with.
 
-5. **Channel Reliability**: 
-   - Channels are reliable; only processes may fail.
-   
-6. **Message Authentication**: 
-   - The study assumes unauthenticated (oral) messages, where message integrity cannot be verified.
+3. #### Network Connectivity
+- **Full Logical Connectivity**: Every process can communicate directly with any other process in the system. This assumption simplifies the design of consensus algorithms by ensuring that message paths are always available.
 
-7. **Agreement Variable**: 
-   - Simplifying assumption using boolean or multi-valued variables.
+4. #### Sender Identification
+- **Known Sender**: A process that receives a message always knows the identity of the sender. Even if a message is tampered with, the recipient can identify who sent it. This helps in detecting and handling malicious behavior.
+
+5. #### Channel Reliability
+- **Reliable Channels**: Assumes that the communication channels themselves do not fail or lose messages; only the processes can fail. This assumption focuses the complexity of the consensus problem on process failures rather than communication failures.
+
+6. #### Message Authentication
+- **Unauthenticated Messages**: The study assumes that messages are not authenticated. This means that:
+  - A faulty process can forge messages and attribute them to other processes.
+- **Authenticated Messages**: Using techniques like digital signatures, message authentication makes it easier to detect forgeries and tampering, reducing the potential damage caused by faulty processes.
+
+7. #### Agreement Variable
+- **Boolean or Multi-valued**: The variable on which agreement is reached can be either boolean (e.g., true/false) or have multiple values. For simplicity, some algorithms are presented using a boolean variable.
+
 
 ### Byzantine Generals Problem
 
