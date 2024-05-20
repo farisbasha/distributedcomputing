@@ -232,7 +232,7 @@ Log-based rollback recovery leverages deterministic and non-deterministic events
 - On failure, systems use these logs to restore consistent states.
 
 ### No-Orphans Consistency Condition
-- **Depend(e)**: Processes affected by a non-deterministic event $e$.
+- **Depend(e)**: Processes affected by a non-deterministic event $e$. According to lamport happened before relation
 - **Log(e)**: Processes that have logged $e$'s determinant in volatile memory.
 - **Stable(e)**: True if $e$'s determinant is logged in stable storage.
 - **Always-No-Orphans Condition**: $\( \forall e: \neg \text{Stable}(e) \Rightarrow \text{Depend}(e) \subseteq \text{Log}(e) \)$.
