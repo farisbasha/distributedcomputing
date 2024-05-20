@@ -183,3 +183,198 @@ The shaded attributes are managed by the file system and typically not updated b
 
 ---
 
+# File Service Architecture
+
+In a distributed file service architecture, clear separation of concerns is achieved by structuring the system into three components: the client module, the directory service, and the flat file service.
+
+<img width="435" alt="Screenshot 2024-05-20 at 10 22 43 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/fae267e7-9e20-4cc6-861c-853415a9c2ab">
+
+
+1. **Client Module**:
+   - **Role**: This component operates on each client computer.
+   - **Functionality**: It integrates and extends the operations of the flat file service and the directory service, providing a unified application programming interface (API) to user-level programs.
+   
+2. **Directory Service**:
+   - **Role**: Provides a mapping between human-readable file names and unique file identifiers (UFIDs).
+   - **Functionality**: Clients use the directory service to obtain a file's UFID by providing its text name. Access control checks are performed during this mapping to ensure proper permissions.
+
+3. **Flat File Service**:
+   - **Role**: Manages operations related to the actual content of files.
+   - **Functionality**: Uses UFIDs to reference files in all operations. It generates a new UFID when a file is created and returns it to the requester. UFIDs are unique across the distributed system.
+   - Flat File Service Model Operations:
+      - Read(FileId, i, n) -> Data: Reads up to n items from a file starting at item ‘i’ and returns it in Data.
+      - Write(FileId, i, Data): Write a sequence of Data to a file, starting at item I and extending the file if necessary.
+      - Create() -> FileId: Creates a new file with length 0 and assigns it a UFID.
+      - Delete(FileId): The file is removed from the file store.
+      - GetAttributes(FileId) -> Attr: Returns the file’s file characteristics.
+      - SetAttributes(FileId, Attr): Sets the attributes of the file.
+
+### Access Control
+
+- **Mechanism**: An access check is conducted whenever a file name is converted to a UFID. Each client request includes a user identity, and the server performs access checks for every file operation to ensure security.
+
+### File Groups
+
+- **Definition**: A file group is a collection of files located on a specific server.
+- **Characteristics**:
+  - Servers may hold multiple file groups.
+  - File groups can be moved between servers, although individual files cannot change groups.
+  - They facilitate the allocation of files across different servers.
+- **Identifier Uniqueness**: File group identifiers must be unique across the distributed system. This is achieved by generating identifiers using a combination of a 32-bit IP address and a 16-bit date-derived integer, ensuring global uniqueness even if systems merge.
+
+
+---
+
+# Sun Network File System (NFS)
+
+**Overview**:
+- **NFS**: A distributed file system protocol developed by Sun Microsystems.
+- **Function**: Allows users on client computers to access files on remote servers using remote procedure calls (RPC).
+
+<img width="480" alt="Screenshot 2024-05-20 at 10 29 13 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/7f3ca9c8-2841-45c2-94b4-8703da6a0a7e">
+
+
+**Virtual File System (VFS)**:
+- **VFS Module**: Added to the UNIX kernel to manage both local and remote files.
+- **File Handles**: Identifiers used in NFS.
+- **Components**:
+  - **File System Identifier**: Unique number for each file system.
+  - **i-node Number**: Locates files and stores attributes; reused after file deletion.
+  - **i-node Generation Number**: Incremented with each reuse of i-node numbers.
+
+**Client Integration**:
+- **NFS Client Module**: Works with the VFS on client machines.
+- **Local Files**: Accessed through the UNIX file system.
+- **Remote Files**: Accessed via NFS requests to the server.
+- **Operation**: Similar to the UNIX file system, including caching file blocks in local memory.
+
+**Access Control and Authentication**:
+- **Stateless Server**: The server doesn't keep files open for clients.
+- **Access Check**: Performed on each request to verify user permissions.
+
+**NFS Server Interface**:
+- **Unified Service**: Handles file and directory operations.
+- **Create Operation**: Combines file creation and insertion into directories.
+
+**Mount Services**:
+- **Function**: Makes remote directories accessible locally.
+- **Syntax**: `mount(remotehost, remotedirectory, localdirectory)`
+- **Types**:
+  - **Soft Mount**: Time-bound, failure message if the request times out.
+  - **Hard Mount**: No time limit, retries until successful.
+  - **Auto Mount**: Performed on demand.
+
+**Server Caching**:
+- **Read Operations**: No consistency issues.
+- **Write Operations**:
+  - **Write-through Caching**: Data written to disk before replying to client.
+  - **Commit Operation**: Data stored in memory, written to disk upon commit.
+
+**Client Caching**:
+- **Operations Cached**: Read, write, getattr, lookup, readdir.
+- **Validation**: Timestamp-based method with two timestamps:
+  - **Tc**: Last validation time.
+  - **Tm**: Last modification time on the server.
+
+---
+
+# Andrew File System (AFS)
+
+<img width="515" alt="Screenshot 2024-05-20 at 10 40 12 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/7636274f-47b6-468b-970a-a53596bd752c">
+
+**Overview**:
+- **AFS**: A distributed file system that uses trusted servers to manage file access.
+- **Local Cache**: Enhances performance by reducing server load and speeding up data access.
+
+**Implementation**:
+- **Components**: Two software components, Vice and Venus.
+  - **Vice**: Server software running as a user-level UNIX process on server machines.
+  - **Venus**: Client software running as a user-level process on client machines.
+
+**File Handling**:
+- **Volumes**: Collections of files managed by Vice on a server.
+- **File Types**:
+  - **Local Files**: Handled by the local UNIX file system.
+  - **Shared Files**: Stored on servers and cached on local disks of workstations.
+
+**Operation**:
+1. **First Request**: Data is fetched from the server and cached locally.
+2. **Subsequent Requests**: Data is served from the local cache.
+
+**Stateful Servers**:
+- **Callbacks**: Servers notify clients of file updates via callback promises.
+  - **Callback Promise**: A guarantee issued by the server to inform the client of any modifications.
+  - **Token States**: Valid or cancelled.
+  - **Validation**: Tokens are checked for validity before accessing cached files.
+
+**Cache Consistency**:
+- **Callback Mechanism**:
+  - When a file is modified, the server sends callbacks to all clients with a copy.
+  - Clients mark the token as cancelled upon receiving a callback.
+- **Revalidation**:
+  - On restart, Venus requests cache validation from the server.
+  - Valid tokens are reinstated if the timestamp is current; otherwise, tokens are cancelled.
+
+**Design Characteristics**:
+- **Whole-file Serving**: Entire files or large chunks are sent to clients.
+- **Whole-file Caching**: Files are cached locally and persist across reboots.
+
+**File Operations in AFS**:
+1. **Open System Call**: 
+   - If the file is not in the local cache, a request is sent to the server.
+   - The file is copied to the local UNIX file system and opened.
+2. **Subsequent Operations**: 
+   - Performed on the local copy.
+3. **Close System Call**: 
+   - If the file is modified, the local changes are sent back to the server.
+   - The server updates the file and its timestamps.
+   - The local copy remains in the cache for future use.
+  
+---
+
+### Google File System (GFS)
+
+<img width="625" alt="Screenshot 2024-05-20 at 10 44 11 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/a624118b-7d4a-4f7a-b7b2-9f56e9de534c">
+
+**Overview**:
+- **Developed by Google Inc.**: To meet growing data processing needs.
+- **Purpose**: Fault tolerance, dependability, scalability, availability, and performance.
+- **Components**: Built from inexpensive commodity hardware.
+
+**Structure**:
+- **Node Cluster**: Includes a single master and several chunk servers.
+- **Chunk Servers**: Store data in large 64 MB chunks, replicated at least three times.
+- **Clients**: Access chunk servers directly for data, reducing network overhead.
+
+**Master Server**:
+- **Responsibilities**:
+  - Manages metadata, including namespace, access control, and data mapping.
+  - Communicates with chunk servers via heartbeat messages to monitor status.
+- **Operation Log**: Keeps a record of cluster activities.
+- **Metadata**: Tracks chunk locations and their corresponding files.
+
+**Chunk Servers**:
+- **Function**: Store file chunks as Linux files.
+- **Replication**: Each chunk is stored on multiple servers for fault tolerance.
+- **Direct Access**: Clients interact directly with chunk servers to fetch data.
+
+**Scalability**:
+- **Cluster Size**: Can exceed 1,000 nodes and 300 TB of storage, accessed by hundreds of clients simultaneously.
+
+**Features**:
+- **Namespace Management**: Organizes files hierarchically with path names.
+- **Fault Tolerance**: Replicates data across multiple servers.
+- **Efficient Recovery**: Automated and efficient data recovery processes.
+- **High Availability**: Large chunk size reduces client-master interactions.
+- **High Throughput**: Supports concurrent operations on many nodes.
+- **Critical Data Replication**: Ensures data is accessible even during node failures.
+
+**Advantages**:
+- **High Accessibility**: Data remains available despite node failures.
+- **Reliable Storage**: Detects and duplicates corrupted data.
+- **Efficient for Large Data**: High throughput and fault tolerance for large datasets.
+
+**Disadvantages**:
+- **Inefficient for Small Files**: Not optimized for handling small files.
+- **Potential Master Bottleneck**: The master server can become a performance bottleneck.
+- **Limited Random Access**: Not designed for frequent random writes; better for write-once, read-many workloads.
