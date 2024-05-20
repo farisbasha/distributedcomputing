@@ -27,7 +27,7 @@ Distributed Shared Memory (DSM) provides an abstraction that allows programmers 
 
 #  Lamport’s Bakery Algorithm
 
-Lamport’s Bakery Algorithm is a classic algorithm for achieving mutual exclusion in a system of \( n \) processes that share memory. The algorithm is designed to ensure that no two processes are in the critical section simultaneously.
+Lamport’s Bakery Algorithm is a classic algorithm for achieving mutual exclusion in a system of \( n \) processes that share memory. The algorithm is designed to ensure that no two processes are in the critical section simultaneously.A unique lexicographic order is defined on the tuple <token, pid> maintained for resolving conflict
 - The algorithm uses a combination of timestamps and process IDs to ensure a unique ordering of processes.
 - The timestamps are chosen in a way that mimics the behavior of customers taking a number in a bakery, thus the name "Bakery Algorithm".
 - This algorithm is particularly notable for being one of the first to provide a simple and effective solution to the mutual exclusion problem in distributed systems.
