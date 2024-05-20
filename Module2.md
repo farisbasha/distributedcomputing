@@ -1,3 +1,4 @@
+
 # Logical Clocks
 
 A system of logical clocks provides a way to order events in a distributed system based on their causal relationships. The system consists of:
