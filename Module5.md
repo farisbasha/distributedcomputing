@@ -131,3 +131,55 @@ An early-stopping consensus algorithm can terminate sooner if fewer than $f$ fai
 ### Lower Bound
 
 At least $f + 1$ rounds are necessary because, in the worst case, one process may fail in each round. The additional round ensures at least one round without any failures, allowing reliable message delivery and computation of the consensus value.
+
+
+---
+
+# Distributed File System (DFS)
+
+A distributed file system (DFS) is designed to manage files in a client/server architecture, providing efficient and secure file storage, retrieval, and management across a network. Key aspects of a DFS include:
+
+### Key Components and Modules
+1. **Directory Module**: Maps file names to file IDs.
+2. **File Module**: Associates file IDs with specific files.
+3. **Access Control Module**: Verifies permissions for requested operations.
+4. **File Access Module**: Handles reading and writing of file data and attributes.
+5. **Block Module**: Manages disk blocks, including access and allocation.
+6. **Device Module**: Manages disk I/O operations and buffering.
+
+### File Attributes
+Files in a DFS contain both data and attributes. Attributes provide metadata about the file, such as:
+- **File Length**
+- **Creation, Read, Write, and Attribute Timestamps**
+- **Reference Count**
+- **Owner**
+- **File Type**
+- **Access Control List**
+
+The shaded attributes are managed by the file system and typically not updated by user programs.
+
+### Requirements for Distributed File Systems
+1. **Transparency**:
+   - **Access Transparency**: Uniform access to local and remote files.
+   - **Location Transparency**: Uniform file name space, allowing file relocation without changing pathnames.
+   - **Mobility Transparency**: Files can be moved without requiring changes to client programs or system administration tables.
+   - **Performance Transparency**: Stable performance despite varying service loads.
+   - **Scaling Transparency**: Incremental growth to handle increasing loads and network sizes.
+
+2. **Concurrent File Updates**: Ensuring changes by one client do not interfere with other clients.
+
+3. **File Replication**: Multiple copies of a file at different locations for load sharing and fault tolerance, often supported through caching.
+
+4. **Heterogeneity**: Compatibility with different operating systems and hardware, ensuring openness.
+
+5. **Fault Tolerance**: Continued operation despite client/server failures, often achieved through replication and robust communication semantics.
+
+6. **Consistency**: One-copy update semantics ensuring uniform updates across all file replicas.
+
+7. **Security**: Authentication, access control, digital signatures, and encryption to protect file access and data integrity.
+
+8. **Efficiency**: Performance comparable to conventional file systems with powerful and general facilities.
+
+
+---
+
