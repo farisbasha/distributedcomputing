@@ -7,7 +7,7 @@ Distributed Shared Memory (DSM) provides an abstraction that allows programmers 
 - **Memory Allocation**: Part of each computer’s memory is allocated to shared space, while the remainder is private memory.
 
 
-<img width="635" alt="Screenshot 2024-04-16 at 12 16 27 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/40c33590-e151-4add-8368-c42c81240055">
+<img width="301" alt="Screenshot 2024-04-16 at 12 16 27 AM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/40c33590-e151-4add-8368-c42c81240055">
 
 <img width="301" alt="Screenshot 2024-05-20 at 2 00 09 PM" src="https://github.com/farisbasha/distributedcomputing/assets/72191505/7b5ad6fb-ff23-413e-92ce-dc1b8c3a1e2b">
 
