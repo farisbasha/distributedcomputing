@@ -1,6 +1,5 @@
 # **Distributed Shared Memory (DSM)**:
 
-
 Distributed Shared Memory (DSM) provides an abstraction that allows programmers to perceive a distributed system's memory as a single monolithic memory, akin to traditional von Neumann architecture. Key points include:
 
 - **Simplified Access**: Programmers use simple read and write primitives to access data across the network.
