@@ -1,3 +1,4 @@
+
 # Distributed Systems: 
   - Independent entities cooperating to solve big problems.
   - Key points: 
