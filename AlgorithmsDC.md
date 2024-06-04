@@ -1,11 +1,13 @@
 # Module 2
 
 ## Chandy Lamport
+
 **Overview:**
 - The Chandy-Lamport algorithm is designed to capture a consistent global state in a distributed system using control messages called markers.
 - This algorithm works in systems with FIFO (First-In-First-Out) communication channels.
 
 ### **Algorithm**
+
 **Marker Sending Rule for Process  $\( p_i \)$ :**
 1. Process  $\( p_i \)$  records its local state.
 2. For each outgoing channel  $\( C \)$  that hasn't received a marker yet,  $\( p_i \)$  sends a marker along  $\( C \)$  before sending any further messages on  $\( C \)$ .
