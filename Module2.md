@@ -8,7 +8,11 @@ A system of logical clocks provides a way to order events in a distributed syste
 The key property of this system is the clock consistency condition:
 - If event  $\( e_i \)$  causally precedes event  $\( e_j \)$  (denoted  $\( e_i \rightarrow e_j \)$  ), then  $\( C(e_i) < C(e_j) \)$ .
 
+
+
 When this condition holds in both directions, meaning  $\( e_i \rightarrow e_j \iff C(e_i) < C(e_j) \)$ , the system is said to be strongly consistent.
+
+
 
 ### Implementation of Logical Clocks
 
