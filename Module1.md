@@ -1,5 +1,6 @@
 
 # Distributed Systems: 
+
   - Independent entities cooperating to solve big problems.
   - Key points: 
     1. Even if one entity fails, work can still happen.
