@@ -1,5 +1,4 @@
 # Consensus and Agreement Algorithms
-
 ### Problem Definition
 Reaching agreement among processes in a distributed system is essential for many applications. This agreement is necessary for coordination and executing tasks that require a collective decision, such as the commit decision in database transactions. The challenge lies in designing algorithms that enable processes to agree under different system and failure models.
 
